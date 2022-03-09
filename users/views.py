@@ -9,21 +9,30 @@ from rest_framework import generics
 from django.shortcuts import render
 from users.models import NewUser
 from rest_framework import viewsets
+from django.http import HttpResponse
 
 
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request, format='json'):
-        serializer = CustomUserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        try:
+            data = []
+            serializer = CustomUserSerializer(data=request.data)
+            if serializer.is_valid():
+                account = serializer.save()
+                account.is_active = True
+                account.save()
+                token = RefreshToken.for_user(account)
+                return HttpResponse(token, content_type="application/json")
 
-# class EntrepriseList(generics.ListCreateAPIView):
+            else:
+                data = serializer.errors
+
+                return Response(data)
+        except KeyError as e:
+            print(e)
+            raise Response({"400": f'Field {str(e)} missing'})
 
 
 class Users(generics.RetrieveUpdateDestroyAPIView):
