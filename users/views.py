@@ -24,7 +24,9 @@ class CustomUserCreate(APIView):
                 account.is_active = True
                 account.save()
                 token = RefreshToken.for_user(account)
-                return HttpResponse(token, content_type="application/json")
+                return Response({
+                    'token': str(token)
+                })
 
             else:
                 data = serializer.errors
