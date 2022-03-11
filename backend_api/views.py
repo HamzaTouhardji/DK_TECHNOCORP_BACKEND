@@ -25,9 +25,7 @@ class UpdateEntreprisePermission(BasePermission):
 
 # class EntrepriseList(generics.ListCreateAPIView):
 class EntrepriseList(viewsets.ModelViewSet):
-   # permission_classes = [
-    #     IsAuthenticated, UpdateEntreprisePermission]
-    #permission_classes = [IsAuthenticatedOrReadOnly]
+    #permission_classes = [IsAuthenticatedOrReadOnly, UpdateEntreprisePermission]
     queryset = Entreprise.objects.all()
     serializer_class = EntrepriseSerializer
 

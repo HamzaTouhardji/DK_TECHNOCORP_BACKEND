@@ -26,7 +26,7 @@ class CustomUserCreate(APIView):
                 token = RefreshToken.for_user(account)
                 return Response({
                     'token': str(token)
-                })
+                }, status=status.HTTP_201_CREATED)
 
             else:
                 data = serializer.errors
